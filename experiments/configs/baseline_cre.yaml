@@ -1,0 +1,15 @@
+# Baseline: forecast next-quarter US CRE loan delinquency from rates and spreads.
+# Run after `altassets fetch-all sources/series.yaml`.
+seed: 0
+freq: QE
+series:
+  - fred:DRCRELEXFACBS
+  - fred:DGS10
+  - fred:BAMLH0A0HYM2
+  - boe:IUDBEDR
+target: fred:DRCRELEXFACBS
+lookback: 8
+horizon: 1
+val_frac: 0.2
+model: {hidden: 32, layers: 1}
+train: {epochs: 200, lr: 0.001, batch_size: 16}

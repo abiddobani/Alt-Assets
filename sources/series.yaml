@@ -1,0 +1,17 @@
+# Starter series for `altassets fetch-all sources/series.yaml`.
+# Codes marked "verify" have not yet been checked against a live response.
+series:
+  # Rates and FX: discount-rate drivers for every asset class
+  - {source: ecb,  id: EXR.D.USD.EUR.SP00.A,                    asset_class: macro, start: "2000-01-01"}
+  - {source: ecb,  id: FM.M.U2.EUR.RT.MM.EURIBOR3MD_.HSTA,      asset_class: macro, start: "2000-01-01"}
+  - {source: ecb,  id: YC.B.U2.EUR.4F.G_N_A.SV_C_YM.SR_10Y,     asset_class: macro, start: "2005-01-01"}
+  - {source: boe,  id: IUDBEDR,                                 asset_class: macro, start: "2000-01-01"}
+  - {source: boe,  id: IUDSOIA,                                 asset_class: macro, start: "2000-01-01"}
+  - {source: fred, id: DGS10,                                   asset_class: macro, start: "2000-01-01"}
+  # Commercial mortgages (US banks)
+  - {source: fred, id: DRCRELEXFACBS,                           asset_class: commercial_mortgages}   # CRE loan delinquency rate
+  - {source: fred, id: CREACBM027NBOG,                          asset_class: commercial_mortgages}   # CRE loans outstanding, verify
+  # Credit spreads (ICE BofA via FRED: third-party licence, internal research only)
+  - {source: fred, id: BAMLH0A0HYM2,                            asset_class: private_liquid_loans}
+  # Private credit: BDC loan book at fair value (Ares Capital), verify concept
+  - {source: sec,  id: "1287750:us-gaap:InvestmentOwnedAtFairValue:USD", asset_class: private_liquid_loans}

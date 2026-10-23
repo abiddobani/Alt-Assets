@@ -1,0 +1,33 @@
+name: ci
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+    inputs:
+      live:
+        description: "Also run live endpoint checks"
+        type: boolean
+        default: false
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install (CPU torch)
+        run: |
+          pip install torch --index-url https://download.pytorch.org/whl/cpu
+          pip install -e ".[ml,dev]"
+      - name: Offline tests
+        run: pytest -q
+      - name: Live endpoint checks
+        if: ${{ inputs.live }}
+        env:
+          ALTASSETS_CONTACT: ${{ secrets.ALTASSETS_CONTACT }}
+          FRED_API_KEY: ${{ secrets.FRED_API_KEY }}
+        run: pytest -q -m live
