@@ -171,6 +171,20 @@ def write_markdown(rows, sources):
         ]) + " |")
     add("")
 
+    add("## Duration check")
+    add("")
+    add("Each duration checked against a published source. Confirmed = the source supports the "
+        "figure; Changed = the figure was updated to match the source (old value in the evidence); "
+        "Partly verified = indirect or partial evidence; Not verified = no source found yet.")
+    add("")
+    add("| ID | Subgroup | Duration (yrs) | Check | Evidence |")
+    add("|---|---|---:|---|---|")
+    for r in rows:
+        add("| " + " | ".join(md_escape(x) for x in [
+            r["id"], r["subgroup"], cell(r, "duration_years"), r["duration_check"], r["duration_evidence"],
+        ]) + " |")
+    add("")
+
     add("## Sources")
     add("")
     add("| ID | Publisher | Title | Year | Used for |")

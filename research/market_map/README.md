@@ -31,7 +31,11 @@ long-run return and fees. It is meant to be revised over several rounds.
 | Fees | Typical management fee / performance fee for fund access. "Commitments" means charged on committed capital, "invested" on deployed capital, "NAV" on net asset value |
 
 Extra columns in the CSV: current or long-run cash yield, the basis for each figure, a
-confidence rating for the size, the sources, and notes.
+confidence rating for the size, the sources, and notes. `duration_check` and
+`duration_evidence` record how each duration was checked against a published source
+(Confirmed, Changed, Partly verified, Not verified); the view lists them under
+"Duration check". Where MBA maturity data is used, a share f of balances maturing in one
+year is read as an average loan term of roughly 1/f years.
 
 ## Known gaps (first draft, 23 Oct 2026)
 
