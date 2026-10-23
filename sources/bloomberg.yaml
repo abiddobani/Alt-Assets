@@ -1,0 +1,25 @@
+# Bloomberg series for `altassets --store data/bloomberg fetch-all sources/bloomberg.yaml`.
+# Runs only on a machine with a logged-in Terminal. Tickers only; the data stays local.
+# Field defaults to PX_LAST. Frequency is daily unless noted.
+series:
+  # Private liquid loans
+  - {source: bloomberg, id: "SPBDAL Index|PX_LAST",   asset_class: private_liquid_loans, start: "2000-01-01"}  # Morningstar LSTA US LL TR
+  - {source: bloomberg, id: "SPBDALB Index|PX_LAST",  asset_class: private_liquid_loans, start: "2000-01-01"}  # price index
+  - {source: bloomberg, id: "SPBDALY Index|PX_LAST",  asset_class: private_liquid_loans, start: "2000-01-01"}  # weighted avg yield, from 2012
+  - {source: bloomberg, id: "I38932US Index|INDEX_DISCOUNT_MARGIN_3_YRS", asset_class: private_liquid_loans, start: "2000-01-01"}  # monthly to 2024-09
+  - {source: bloomberg, id: "CSLLLTOB Index|PX_LAST", asset_class: private_liquid_loans, start: "2000-01-01"}  # S&P UBS LL DM to 3y, monthly to 2008-07
+  # Commercial mortgages
+  - {source: bloomberg, id: "LUCMTRUU Index|PX_LAST",          asset_class: commercial_mortgages, start: "2000-01-01"}
+  - {source: bloomberg, id: "LUCMTRUU Index|INDEX_OAS_TSY_BP", asset_class: commercial_mortgages, start: "2000-01-01"}
+  # Real estate equity
+  - {source: bloomberg, id: "FNERTR Index|PX_LAST",   asset_class: real_estate_equity, start: "2000-01-01"}
+  - {source: bloomberg, id: "NPPITR Index|PX_LAST",   asset_class: real_estate_equity, start: "2000-01-01"}  # NCREIF NPI, quarterly
+  - {source: bloomberg, id: "NPPIODCE Index|PX_LAST", asset_class: real_estate_equity, start: "2000-01-01"}  # NCREIF ODCE, quarterly
+  - {source: bloomberg, id: "MOCICINP Index|PX_LAST", asset_class: real_estate_equity, start: "2000-01-01"}  # RCA CPPI national, monthly
+  # Infrastructure equity
+  - {source: bloomberg, id: "SPGTINTR Index|PX_LAST", asset_class: infrastructure_equity, start: "2000-01-01"}
+  # Private equity (listed proxy, EUR)
+  - {source: bloomberg, id: "LPX50TR Index|PX_LAST",  asset_class: private_equity, start: "2000-01-01"}
+  # Illiquid term loans (direct lending)
+  - {source: bloomberg, id: "CDLI Index|PX_LAST",     asset_class: illiquid_term_loans, start: "2000-01-01"}  # quarterly, stale after 2023-06
+  - {source: bloomberg, id: "CWBDC Index|PX_LAST",    asset_class: illiquid_term_loans, start: "2000-01-01"}  # listed BDC proxy
