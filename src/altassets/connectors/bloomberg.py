@@ -19,6 +19,19 @@ from altassets.connectors.base import Connector
 from altassets.data.schema import SeriesMeta, normalize
 from altassets.taxonomy import AssetClass
 
+MAX_TIMEOUTS = 12  # consecutive 5 s waits with no event before giving up
+
+
+class BloombergError(RuntimeError):
+    pass
+
+
+def _error_text(err) -> str:
+    """Format an errorInfo element as "CATEGORY/SUBCATEGORY: message"."""
+    parts = [err.getElementAsString(n) for n in ("category", "subcategory") if err.hasElement(n)]
+    msg = err.getElementAsString("message") if err.hasElement("message") else str(err)
+    return f"{'/'.join(parts)}: {msg}" if parts else msg
+
 
 class BloombergDesktopConnector(Connector):
     source = "bloomberg"
@@ -54,13 +67,31 @@ class BloombergDesktopConnector(Connector):
                 req.set("endDate", end.replace("-", ""))
             session.sendRequest(req)
             rows = []
+            timeouts = 0
             while True:
                 ev = session.nextEvent(5000)
+                if ev.eventType() == blpapi.Event.TIMEOUT:
+                    timeouts += 1
+                    if timeouts >= MAX_TIMEOUTS:
+                        raise BloombergError(f"{security}: no response from the Terminal")
+                    continue
+                timeouts = 0
                 for msg in ev:
-                    if msg.hasElement("securityData"):
-                        fd = msg.getElement("securityData").getElement("fieldData")
-                        for i in range(fd.numValues()):
-                            pt = fd.getValueAsElement(i)
+                    if msg.hasElement("responseError"):
+                        raise BloombergError(f"{security}: {_error_text(msg.getElement('responseError'))}")
+                    if not msg.hasElement("securityData"):
+                        continue
+                    sd = msg.getElement("securityData")
+                    if sd.hasElement("securityError"):
+                        raise BloombergError(f"{security}: {_error_text(sd.getElement('securityError'))}")
+                    fx = sd.getElement("fieldExceptions") if sd.hasElement("fieldExceptions") else None
+                    if fx is not None and fx.numValues():
+                        err = fx.getValueAsElement(0).getElement("errorInfo")
+                        raise BloombergError(f"{security}|{field}: {_error_text(err)}")
+                    fd = sd.getElement("fieldData")
+                    for i in range(fd.numValues()):
+                        pt = fd.getValueAsElement(i)
+                        if pt.hasElement(field):  # a date can come back without the field
                             rows.append(
                                 {
                                     "date": pt.getElementAsDatetime("date"),
@@ -69,6 +100,8 @@ class BloombergDesktopConnector(Connector):
                             )
                 if ev.eventType() == blpapi.Event.RESPONSE:
                     break
+            if not rows:
+                raise BloombergError(f"{series_id}: no observations returned")
         finally:
             session.stop()
         meta = SeriesMeta(
